@@ -25,7 +25,7 @@ jobs:
 
   hello-orb:
     docker:
-      - image:cimg/base:current
+      - image: cimg/base:current
     steps:
       - greet:
           to: "special delivery from inline orb"
