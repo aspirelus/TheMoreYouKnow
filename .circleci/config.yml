@@ -34,7 +34,8 @@ jobs:
     executor: node/default
     steps:
       - checkout
-      # - node/install-packages # package.json is required in root folder
+      - node/install-packages:
+          app-dir: know
 
 workflows:
   my-workflow:
