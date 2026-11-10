@@ -36,6 +36,16 @@ jobs:
       - checkout
       - node/install-packages:
           app-dir: know
+  build:
+    docker:
+      - image: cimg/node:20.11.0
+    steps:
+      - checkout
+      - node/install-packages:
+          app-dir: know
+      - run:
+          name: Linting process
+          command: cd know && npm run build
   
   linting:
     docker:
@@ -54,4 +64,5 @@ workflows:
       - hello-job
       - hello-orb
       - orbUse
+      - build
       - linting
