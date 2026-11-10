@@ -22,6 +22,6 @@ export default defineConfig([{
         },
 
         ecmaVersion: "latest",
-        sourceType: "commonjs",
+        sourceType: "module",
     },
 }]);
