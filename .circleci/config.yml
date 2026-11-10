@@ -96,7 +96,7 @@ jobs:
       - setup_remote_docker
       - run:
         name: Build, smoke-test, and publish to GHCR
-          command: |
+        command: |
             set -euo pipefail
 
             IMAGE=ghcr.io/aspirelus/themoreyouknow
@@ -152,7 +152,7 @@ workflows:
             - testing
       - circleci-deploy:
           requires:
-          - hold
+            - hold
       - deploy:
           requires:
             - circleci-deploy
