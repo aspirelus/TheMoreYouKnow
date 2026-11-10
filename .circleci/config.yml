@@ -16,7 +16,7 @@ commands:
 jobs:
   hello-job:
     docker:
-      - image: cimg/node:17.2.0
+      - image: cimg/node:20.11.0
     steps:
       - checkout
       - run:
@@ -30,16 +30,26 @@ jobs:
       - greet:
           to: "special delivery from inline orb"
 
-  orbUse-job: # registry orb use
+  orbUse: # registry orb use
     executor: node/default
     steps:
       - checkout
       - node/install-packages:
           app-dir: know
+  
+  linting:
+    docker:
+      - image: cimg/node:20.11.0
+    steps:
+      - checkout
+      - run:
+        - name: Linting process
+        - command: cd know && npm run lint
 
 workflows:
   my-workflow:
     jobs:
       - hello-job
       - hello-orb
-      - orbUse-job
+      - orbUse
+      - linting
