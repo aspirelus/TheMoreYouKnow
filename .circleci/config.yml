@@ -2,7 +2,7 @@
 version: "2.1"
 
 orbs:
-  node: circleci/node@5.0.3 # registry orb import
+  node: circleci/node@7.2.1 # registry orb import
 
 commands:
   greet: # command name
@@ -16,11 +16,11 @@ commands:
 jobs:
   hello-job:
     docker:
-      - image: cimg/node:17.2.0
+      - image: cimg/node:20.19.0
     steps:
       - checkout
       - run:
-          name: build
+          name: Greeting
           command: echo "Hello there!"
 
   hello-orb:
@@ -30,16 +30,39 @@ jobs:
       - greet:
           to: "special delivery from inline orb"
 
-  orbUse-job: # registry orb use
+  orbUse: # registry orb use
     executor: node/default
     steps:
       - checkout
       - node/install-packages:
           app-dir: know
+  build:
+    docker:
+      - image: cimg/node:20.19.0
+    steps:
+      - checkout
+      - node/install-packages:
+          app-dir: know
+      - run:
+          name: Linting process
+          command: cd know && npm run build
+
+  linting:
+    docker:
+      - image: cimg/node:20.19.0
+    steps:
+      - checkout
+      - node/install-packages:
+          app-dir: know
+      - run:
+          name: Linting process
+          command: cd know && npm run lint
 
 workflows:
   my-workflow:
     jobs:
       - hello-job
       - hello-orb
-      - orbUse-job
+      - orbUse
+      - build
+      - linting
