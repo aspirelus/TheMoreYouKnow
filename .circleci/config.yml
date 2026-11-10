@@ -65,20 +65,23 @@ jobs:
       - run:
           name: Testing process
           command: cd know && npm test
-  circleci-testing:
-    docker:
-      - image: cimg/node:24.16.0
-    steps:
-      - checkout
-      - node/install-packages:
-          app-dir: know
-          pkg-manager: npm
+  deploy:
       - run:
-          name: Run tests
-          command: circleci testsuite run "ci tests"
-      - store_test_results:
-          # Must match outputs.junit in test-suites.yml
-          path: test-reports
+          name: Plan a deploy
+          command: |
+            circleci run release plan \
+              --environment-name="production" \
+              --component-name="TheMoreYouKnow" \
+              --target-version="<some-version-name>"
+      # Your job here doing the actual deployment
+      - run:
+          name: Update a deploy to SUCCESS
+          command: circleci run release update --status=SUCCESS
+          when: on_success
+      - run:
+          name: Update planned deploy to FAILED
+          command: circleci run release update --status=FAILED
+          when: on_fail
 
 workflows:
   my-workflow:
@@ -100,9 +103,6 @@ workflows:
           type: approval
           requires:
             - testing
-      - circleci-testing:
-          requires:
-            - hold
-      # - deploy:
-      #   requires:
-      #     - hold
+      - deploy:
+        requires:
+          - hold
