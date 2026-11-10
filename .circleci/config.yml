@@ -43,8 +43,8 @@ jobs:
     steps:
       - checkout
       - run:
-        - name: Linting process
-        - command: cd know && npm run lint
+          name: Linting process
+          command: cd know && npm run lint
 
 workflows:
   my-workflow:
