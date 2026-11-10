@@ -66,6 +66,12 @@ jobs:
           name: Testing process
           command: cd know && npm test
   deploy:
+    docker:
+      - image: cimg/node:24.16.0
+    steps:
+      - checkout
+      - node/install-packages:
+          app-dir: know
       - run:
           name: Plan a deploy
           command: |
