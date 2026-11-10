@@ -1,4 +1,4 @@
-import { defineConfig } from "eslint/config";
+import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -13,15 +13,18 @@ const compat = new FlatCompat({
     allConfig: js.configs.all
 });
 
-export default defineConfig([{
-    extends: compat.extends("eslint:recommended"),
+export default defineConfig([
+    globalIgnores(["dist/**"]),
+    {
+	extends: compat.extends("eslint:recommended"),
+	languageOptions: {
+            globals: {
+	        ...globals.browser,
+                ...globals.node,
+            },
 
-    languageOptions: {
-        globals: {
-            ...globals.node,
+            ecmaVersion: "latest",
+            sourceType: "module",
         },
-
-        ecmaVersion: "latest",
-        sourceType: "module",
     },
-}]);
+]);
