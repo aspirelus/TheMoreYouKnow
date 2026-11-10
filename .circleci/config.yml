@@ -85,23 +85,23 @@ workflows:
       - hello-job
       - hello-orb
       - orbUse:
-        requires:
-          - hello-orb
+          requires:
+            - hello-orb
       - build
       - linting:
-        requires:
-          - build
+          requires:
+            - build
       - testing:
-        requires:
-          - build
-          - linting
+          requires:
+            - build
+            - linting
       - hold:
-        type: approval
-        requires:
-          - testing
+          type: approval
+          requires:
+            - testing
       - circleci-testing:
-        requires:
-          - hold
+          requires:
+            - hold
       # - deploy:
       #   requires:
       #     - hold
