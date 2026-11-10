@@ -2,7 +2,7 @@
 version: "2.1"
 
 orbs:
-  node: circleci/node@5.0.3 # registry orb import
+  node: circleci/node@7.2.1 # registry orb import
 
 commands:
   greet: # command name
