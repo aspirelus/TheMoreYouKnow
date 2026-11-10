@@ -65,7 +65,7 @@ jobs:
       - run:
           name: Testing process
           command: cd know && npm test
-  deploy:
+  circleci-deploy:
     docker:
       - image: cimg/node:24.16.0
     steps:
@@ -78,7 +78,7 @@ jobs:
             circleci run release plan \
               --environment-name="production" \
               --component-name="TheMoreYouKnow" \
-              --target-version="<some-version-name>"
+              --target-version="1.0.0"
       # Your job here doing the actual deployment
       - run:
           name: Update a deploy to SUCCESS
@@ -88,6 +88,47 @@ jobs:
           name: Update planned deploy to FAILED
           command: circleci run release update --status=FAILED
           when: on_fail
+  deploy:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+        name: Build, smoke-test, and publish to GHCR
+          command: |
+            set -euo pipefail
+
+            IMAGE=ghcr.io/aspirelus/themoreyouknow
+            TAG="$CIRCLE_SHA1"
+
+            echo "$GHCR_TOKEN" | docker login ghcr.io \
+              --username "$GHCR_USER" \
+              --password-stdin
+
+            docker build --pull \
+              --label org.opencontainers.image.source=https://github.com/aspirelus/TheMoreYouKnow \
+              --tag "$IMAGE:$TAG" \
+              .
+
+            docker run -d --name app-smoke-test "$IMAGE:$TAG"
+            trap 'docker logs app-smoke-test 2>/dev/null || true; docker rm -f app-smoke-test 2>/dev/null || true' EXIT
+
+            ready=false
+            for i in $(seq 1 10); do
+              if docker exec app-smoke-test wget -qO- http://127.0.0.1/ > /tmp/app.html; then
+                ready=true
+                break
+              fi
+              sleep 2
+            done
+
+            test "$ready" = true
+            grep -q 'id="app"' /tmp/app.html
+
+            docker rm -f app-smoke-test
+            trap - EXIT
+            docker push "$IMAGE:$TAG"
 
 workflows:
   my-workflow:
@@ -109,6 +150,9 @@ workflows:
           type: approval
           requires:
             - testing
-      - deploy:
+      - circleci-deploy:
           requires:
           - hold
+      - deploy:
+          requires:
+            - circleci-deploy
