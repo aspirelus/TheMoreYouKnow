@@ -71,6 +71,7 @@ jobs:
     steps:
       - checkout
       - node/install-packages:
+          app-dir: know
           pkg-manager: npm
       - run:
           name: Run tests
