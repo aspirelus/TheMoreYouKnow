@@ -110,5 +110,5 @@ workflows:
           requires:
             - testing
       - deploy:
-        requires:
+          requires:
           - hold
