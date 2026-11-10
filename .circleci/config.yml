@@ -42,6 +42,8 @@ jobs:
       - image: cimg/node:20.11.0
     steps:
       - checkout
+      - node/install-packages:
+          app-dir: know
       - run:
           name: Linting process
           command: cd know && npm run lint
