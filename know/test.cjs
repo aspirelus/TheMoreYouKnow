@@ -1,6 +1,6 @@
 const assert = require("node:assert/strict");
 const test = require("node:test");
-const { createServer } = require("./index");
+const { createServer } = require("./index.cjs");
 
 test("GET /health returns an OK status", async (t) => {
   const server = createServer();
