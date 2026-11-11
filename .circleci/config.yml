@@ -146,11 +146,11 @@ workflows:
           requires:
             - build
             - linting
-      - hold:
-          type: approval
+      - circleci-deploy:
           requires:
+            - build
+            - linting
             - testing
-      - circleci-deploy
       - deploy:
           context: ghcr-publish
           requires:
