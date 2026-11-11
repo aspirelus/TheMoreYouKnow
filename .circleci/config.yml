@@ -150,13 +150,8 @@ workflows:
           type: approval
           requires:
             - testing
-      - circleci-deploy:
-          requires:
-            - hold
+      - circleci-deploy
       - deploy:
           context: ghcr-publish
           requires:
             - circleci-deploy
-          filters:
-            branches:
-              only: main
