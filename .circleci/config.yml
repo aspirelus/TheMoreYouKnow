@@ -95,8 +95,8 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-        name: Build, smoke-test, and publish to GHCR
-        command: |
+          name: Build, smoke-test, and publish to GHCR
+          command: |
             set -euo pipefail
 
             IMAGE=ghcr.io/aspirelus/themoreyouknow
